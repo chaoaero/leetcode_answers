@@ -49,11 +49,42 @@ int strStr(string haystack, string needle) {
     return -1;
 }
 
+// Sunday algorithm
+
+int SundaystrStr(string haystack, string needle) {
+    
+    int occ[500];
+    int p_size = needle.size();
+    for(int i = 0;i < 500; i++) {
+        occ[i] = p_size + 1;
+    }
+    for(int j = 0; j< needle.size(); j++) {
+        occ[needle[j]] = p_size - j;
+    }
+    int str_len = haystack.size();
+    int i = 0;
+    bool match = false;
+    int pos = -1;
+    while(i <= str_len - p_size) {
+        int m = p_size - 1;
+        while(m >= 0 && (haystack[i + m] == needle[m]))
+            m--;
+        if(m < 0) {
+            match = true;
+            pos = i;
+            break;
+        }
+        i += occ[haystack[i + p_size]];
+    }
+    return pos;
+
+}
+
 int main() {
 
     string target, pattern;
     cin>>target>>pattern;
     cout<<target<<"\t"<<pattern<<endl;
-    cout<<strStr(target, pattern)<<endl;
+    cout<<SundaystrStr(target, pattern)<<endl;
     return 0;
 }
