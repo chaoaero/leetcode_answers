@@ -18,31 +18,41 @@
 
 using namespace std;
 
+// 需要考察计算机补码的相关知识，补码运算，整溢出，负溢出
+// INT_MIN - 1 = INT_MAX
 int divide(int dividend, int divisor) {
 
     int result = 0;
     int k = 0;
-    unsigned long my_divisor = abs(divisor);
-    unsigned long my_dividend = abs(dividend);
-    while(my_divisor < my_dividend && my_divisor < (LONG_MAX >> 1)) {
-       my_divisor <<= 1; 
-       k++;
+    int  my_divisor = abs(divisor);
+    int my_dividend = abs(dividend);
+    if(my_divisor == INT_MIN ) {
+        return my_dividend == INT_MIN ? 1:0;
     }
-    my_divisor >>= 1;
-    k--;
+    if(my_dividend == INT_MIN) {
+        result += 1;
+        my_dividend = INT_MAX  - my_divisor + 1;
+    }
+    int ff = 0;
+    while((my_divisor <<1) < my_dividend && my_divisor << 1 > 0) {
+        //        cout<<my_divisor<<"\t"<<my_dividend<<"\t"<<ff++<<endl;
+        my_divisor <<= 1;
+        k++;
+    }
 
     for(int i=k; i >= 0; i--) {
-        cout<<my_dividend<<"\t"<<my_divisor<<"\t"<<i<<endl;
         while(my_dividend - my_divisor >= 0) {
-            cout<<my_dividend<<"\t"<<my_divisor<<endl;
             my_dividend -= my_divisor;
             result += 1<<i;
         }
         my_divisor >>= 1;
     }
-    
-    cout<<"==="<<endl;
-    return (divisor ^ dividend) >> 31 ? -result : result;
+
+
+    int flag = (divisor ^ dividend) >>31;
+    if(!flag && (result == INT_MIN))
+        return INT_MAX;
+    return flag ? -result : result;
 }
 
 int main() {
