@@ -48,11 +48,27 @@ TreeNode* sortedListToBST(ListNode* head) {
 }
 
 TreeNode* sortedArrayToBST(vector<int>& nums) {
-    return NULL;
+    if(nums.size() == 0)
+        return NULL;
+    return construct_tree(nums, 0, nums.size() - 1); 
 }
 
 TreeNode* construct_tree(vector<int>& nums, int start , int end) {
-
+    if(start == end) {
+        TreeNode *root = new TreeNode(nums[start]);
+        root->left = NULL;
+        root->right = NULL;
+        return root;
+    } else if(start > end) {
+        return NULL;
+    }
+    int parent_idx = start + (end - start) / 2;
+    TreeNode *parent = new TreeNode(nums[parent_idx]);
+    TreeNode *left = construct_tree(nums, start, parent_idx - 1 );
+    TreeNode *right = construct_tree(nums, parent_idx + 1, end);
+    parent->left = left;
+    parent->right = right;
+    return parent;
 }
 
 
@@ -66,7 +82,6 @@ int main() {
         tag = tag->next;
     }
     
-//    sol.printList(head);    
     TreeNode *woca = sortedListToBST(head);
     return 0;
 
